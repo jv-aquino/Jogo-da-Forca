@@ -5,12 +5,23 @@ local jogo = {
   letras_usadas = {},
   chances_restantes = 6,
   jogoGanho = false,
-  estaAtivo = true
+  estaAtivo = false
 }
 
 for i = 1, #palavras do
   jogo.letras_usadas[i] = false
 end
+
+function love.load()
+  font = love.graphics.newFont(24)
+end
+
+function menu()
+  love.graphics.setFont(font)
+  love.graphics.print("Bem-vindo ao Jogo da Forca!", 150, 150)
+  love.graphics.print("Pressione 'C' para começar ou 'Q' para sair.", 150, 200)
+end
+
 
 function draw_forca(chances_restantes)
   -- forca
@@ -69,7 +80,18 @@ function draw_palavra(palavra, letras_usadas)
 end
 
 function love.keypressed(key)
-  if jogo.estaAtivo and not jogo.jogoGanho and key:match("[a-zA-Z]") then
+  if not jogo.estaAtivo or jogo.jogoGanho and (key == "c" or key == "C") then
+    jogo.palavra = palavras[love.math.random(#palavras)]
+    jogo.letras_usadas = {}
+    for i = 1, #jogo.palavra do
+      jogo.letras_usadas[jogo.palavra:sub(i, i)] = false
+    end
+    jogo.chances_restantes = 6
+    jogo.jogoGanho = false
+    jogo.estaAtivo = true
+  elseif not jogo.estaAtivo or jogo.jogoGanho and (key == "q" or key == "Q") then
+    love.event.quit()
+  elseif jogo.estaAtivo and not jogo.jogoGanho and key:match("[a-zA-Z]") then
     local letra = key:lower()
 
     if not jogo.letras_usadas[letra] then
@@ -82,7 +104,6 @@ function love.keypressed(key)
           jogo.estaAtivo = false
         end
       end
-      
       check_jogoGanho()
     end
   end
@@ -90,11 +111,16 @@ end
 
 
 function love.draw()
-  draw_forca(jogo.chances_restantes)
-  draw_palavra(jogo.palavra, jogo.letras_usadas)
-  if not jogo.estaAtivo then
-    love.graphics.print("Você foi enforcado :(", 10, 10)
-  elseif jogo.jogoGanho then
-    love.graphics.print("Você ganhou!", 10, 10)
+  if jogo.estaAtivo and not jogo.jogoGanho then
+    draw_forca(jogo.chances_restantes)
+    draw_palavra(jogo.palavra, jogo.letras_usadas)
+    if not jogo.estaAtivo then
+      love.graphics.print("Você foi enforcado :(", 10, 10)
+    elseif jogo.jogoGanho then
+      love.graphics.print("Você ganhou!", 10, 10)
+      jogo.jogoGanho = false
+    end
+  else
+    menu()
   end
 end
