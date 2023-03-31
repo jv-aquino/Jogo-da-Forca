@@ -5,8 +5,21 @@ local jogo = {
   letras_usadas = {},
   chances_restantes = 6,
   jogoGanho = false,
-  estaAtivo = false
+  estaAtivo = false,
+  firstTime = true
 }
+
+function resetGame()
+  jogo.palavra = palavras[love.math.random(#palavras)]
+  jogo.letras_usadas = {}
+  for i = 1, #jogo.palavra do
+    jogo.letras_usadas[jogo.palavra:sub(i, i)] = false
+  end
+  jogo.chances_restantes = 6
+  jogo.jogoGanho = false
+  jogo.estaAtivo = true
+  jogo.firstTime = false
+end
 
 for i = 1, #palavras do
   jogo.letras_usadas[i] = false
@@ -19,7 +32,7 @@ end
 function menu()
   love.graphics.setFont(font)
   love.graphics.print("Bem-vindo ao Jogo da Forca!", 150, 150)
-  love.graphics.print("Pressione 'C' para começar ou 'Q' para sair.", 150, 200)
+  love.graphics.print("Pressione 'C' para começar ou 'Q' para sair", 150, 200)
 end
 
 
@@ -80,17 +93,10 @@ function draw_palavra(palavra, letras_usadas)
 end
 
 function love.keypressed(key)
-  if not jogo.estaAtivo or jogo.jogoGanho and (key == "c" or key == "C") then
-    jogo.palavra = palavras[love.math.random(#palavras)]
-    jogo.letras_usadas = {}
-    for i = 1, #jogo.palavra do
-      jogo.letras_usadas[jogo.palavra:sub(i, i)] = false
-    end
-    jogo.chances_restantes = 6
-    jogo.jogoGanho = false
-    jogo.estaAtivo = true
-  elseif not jogo.estaAtivo or jogo.jogoGanho and (key == "q" or key == "Q") then
+  if (not jogo.estaAtivo or jogo.jogoGanho) and (key == "q" or key == "Q") then
     love.event.quit()
+  elseif (not jogo.estaAtivo or jogo.jogoGanho) and (key == "c" or key == "C") then
+    resetGame()
   elseif jogo.estaAtivo and not jogo.jogoGanho and key:match("[a-zA-Z]") then
     local letra = key:lower()
 
@@ -99,28 +105,31 @@ function love.keypressed(key)
 
       if not jogo.palavra:match(letra) then
         jogo.chances_restantes = jogo.chances_restantes - 1
-
-        if jogo.chances_restantes == 0 then
-          jogo.estaAtivo = false
-        end
       end
       check_jogoGanho()
     end
   end
 end
 
-
 function love.draw()
   if jogo.estaAtivo and not jogo.jogoGanho then
     draw_forca(jogo.chances_restantes)
     draw_palavra(jogo.palavra, jogo.letras_usadas)
-    if not jogo.estaAtivo then
-      love.graphics.print("Você foi enforcado :(", 10, 10)
+    if jogo.chances_restantes == 0 then
+      jogo.estaAtivo = false
     elseif jogo.jogoGanho then
-      love.graphics.print("Você ganhou!", 10, 10)
       jogo.jogoGanho = false
     end
   else
-    menu()
+    if jogo.firstTime then
+      menu()
+    elseif jogo.chances_restantes == 0 then
+      love.graphics.print("Você foi enforcado :(", 50, 200)
+      love.graphics.print("A palavra era \"".. jogo.palavra.."\"", 50, 250)
+      love.graphics.print("Pressione \"C\" para começar novamente ou \"Q\" para sair", 50, 300)
+    elseif jogo.jogoGanho then
+      love.graphics.print("Você ganhou!!!", 150, 225)
+      love.graphics.print("Pressione \"C\" para começar novamente ou \"Q\" para sair", 50, 275)
+    end
   end
 end
