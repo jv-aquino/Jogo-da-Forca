@@ -27,12 +27,17 @@ end
 
 function love.load()
   font = love.graphics.newFont(24)
+  
+  bgMusic = love.audio.newSource("bgmusic.mp3", "stream")
+  bgMusic:setVolume(0.3)
+  bgMusic:setLooping(true)
+  bgMusic:play()
 end
 
 function menu()
   love.graphics.setFont(font)
   love.graphics.print("Bem-vindo ao Jogo da Forca!", 150, 150)
-  love.graphics.print("Pressione 'C' para começar ou 'Q' para sair", 150, 200)
+  love.graphics.print("Pressione 'C' para começar ou 'S' para sair", 150, 200)
 end
 
 
@@ -93,7 +98,7 @@ function draw_palavra(palavra, letras_usadas)
 end
 
 function love.keypressed(key)
-  if (not jogo.estaAtivo or jogo.jogoGanho) and (key == "q" or key == "Q") then
+  if (not jogo.estaAtivo or jogo.jogoGanho) and (key == "s" or key == "S") then
     love.event.quit()
   elseif (not jogo.estaAtivo or jogo.jogoGanho) and (key == "c" or key == "C") then
     resetGame()
@@ -126,10 +131,10 @@ function love.draw()
     elseif jogo.chances_restantes == 0 then
       love.graphics.print("Você foi enforcado :(", 50, 200)
       love.graphics.print("A palavra era \"".. jogo.palavra.."\"", 50, 250)
-      love.graphics.print("Pressione \"C\" para começar novamente ou \"Q\" para sair", 50, 300)
+      love.graphics.print("Pressione \"C\" para começar novamente ou \"S\" para sair", 50, 300)
     elseif jogo.jogoGanho then
       love.graphics.print("Você ganhou!!!", 150, 225)
-      love.graphics.print("Pressione \"C\" para começar novamente ou \"Q\" para sair", 50, 275)
+      love.graphics.print("Pressione \"C\" para começar novamente ou \"S\" para sair", 50, 275)
     end
   end
 end
