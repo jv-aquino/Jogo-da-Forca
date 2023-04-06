@@ -26,6 +26,11 @@ for i = 1, #palavras do
 end
 
 function love.load()
+  local logo = love.image.newImageData("logo.png")
+  love.window.setIcon(logo)
+
+  love.window.setTitle("Jogo da Forca")
+
   font = love.graphics.newFont(24)
   
   bgMusic = love.audio.newSource("bgmusic.mp3", "stream")
@@ -36,8 +41,8 @@ end
 
 function menu()
   love.graphics.setFont(font)
-  love.graphics.print("Bem-vindo ao Jogo da Forca!", 150, 150)
-  love.graphics.print("Pressione 'C' para começar ou 'S' para sair", 150, 200)
+  love.graphics.print("Bem-vindo ao Jogo da Forca!", 130, 150)
+  love.graphics.print("Pressione 'C' para começar ou 'S' para sair", 130, 200)
 end
 
 
