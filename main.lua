@@ -34,7 +34,7 @@ function love.load()
   font = love.graphics.newFont(24)
   
   bgMusic = love.audio.newSource("bgmusic.mp3", "stream")
-  bgMusic:setVolume(0.3)
+  bgMusic:setVolume(0.4)
   bgMusic:setLooping(true)
   bgMusic:play()
 end
@@ -53,27 +53,29 @@ function draw_forca(chances_restantes)
   love.graphics.line(200, 50, 200, 75)
 
   if chances_restantes < 6 then
-    love.graphics.circle("line", 200, 100, 25)
+    local cabeca = love.graphics.newImage("matue.png")
+    local scale = 0.22
+    love.graphics.draw(cabeca, 166, 75, 0, scale, scale)
   end
 
   if chances_restantes < 5 then
-    love.graphics.line(200, 125, 200, 225)
+    love.graphics.line(200, 150, 200, 235)
   end
 
   if chances_restantes < 4 then
-    love.graphics.line(200, 150, 175, 175)
+    love.graphics.line(200, 160, 175, 190)
   end
 
   if chances_restantes < 3 then
-    love.graphics.line(200, 150, 225, 175)
+    love.graphics.line(200, 160, 225, 190)
   end
 
   if chances_restantes < 2 then
-    love.graphics.line(200, 225, 175, 250)
+    love.graphics.line(200, 235, 175, 265)
   end
 
   if chances_restantes < 1 then
-    love.graphics.line(200, 225, 225, 250)
+    love.graphics.line(200, 235, 225, 265)
   end
 end
 
